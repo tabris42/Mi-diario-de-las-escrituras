@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Diario Coquette 🎀</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;600&display=swap');
+
+        /* --- VARIABLES COQUETTE --- */
+        :root {
+            --church-blue: #d4a5a5; 
+            --church-gold: #ffc5bf;
+            --bg-main: #fff5f6;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --text-main: #6d5a5a; 
+            --text-muted: #a89393;
+            --bubble-bg: #ffffff;
+            --bubble-border: #ebdada;
+            --bubble-text: #c48b8b;
+            --notes-bg: #fffafa;
+            --notes-border: #ebdada;
+            --fav-bg: #fff9f9;
+            --prophet-bg: #fffbfb;
+            --prophet-border: #ffc5bf;
+            --prophet-text: #6d5a5a;
+            --streak-bg: #fff0f2;
+            --streak-border: #d4a5a5;
+            --streak-icon: #e67a7a;
+            --mood-bg: #fff0f2;
+            --mood-border: #f2c4c4;
+            --mood-text: #a35d5d;
+            --btn-sec-bg: #ffffff;
+            --btn-sec-text: #d4a5a5;
+            --btn-danger-text: #ef9a9a;
+            --btn-danger-border: #ffcdd2;
+            --shadow-soft: 0 8px 20px rgba(212, 165, 165, 0.1);
+        }
+
+        body.dark-mode {
+            --church-blue: #e0b1b1; 
+            --church-gold: #f0c0c0;
+            --bg-main: #3a2a2a;
+            --bg-card: rgba(69, 50, 50, 0.95);       
+            --text-main: #f2e6e6;     
+            --text-muted: #cbbaba;
+            --bubble-bg: #543d3d;
+            --bubble-border: #7a5e5e;
+            --bubble-text: #e0b1b1;
+            --notes-bg: #453232;
+            --notes-border: #7a5e5e;
+            --fav-bg: #4f3a3a;
+            --prophet-bg: #543d3d;
+            --prophet-border: #8f7070;
+            --prophet-text: #f0c0c0;
+            --streak-bg: #543d3d;
+            --streak-border: #8f7070;
+            --streak-icon: #ff8a8a;
+            --mood-bg: #543d3d;
+            --mood-border: #7a5e5e;
+            --mood-text: #f0c0c0;
+            --btn-sec-bg: #453232;
+            --btn-sec-text: #e0b1b1;
+            --btn-danger-text: #ff8a8a;
+            --btn-danger-border: #ef9a9a;
+            --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            box-sizing: border-box;
+            background-color: var(--bg-main);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- ESTILOS COMUNES --- */
+        .theme-toggle {
+            position: absolute; top: 20px; right: 20px; background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8); color: var(--text-main); padding: 8px 15px;
+            border-radius: 50px; cursor: pointer; font-size: 1.2rem; backdrop-filter: blur(5px);
+            transition: all 0.2s; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .theme-toggle:hover { background: white; transform: scale(1.1) rotate(10deg); }
+
+        h1 {
+            font-family: 'Dancing Script', cursive; color: var(--text-main); text-align: center;
+            margin-bottom: 5px; font-weight: 700; font-size: 3.5rem;
+            text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8); letter-spacing: 1px;
+        }
+
+        .instruction-subtitle {
+            font-family: 'Playfair Display', serif; color: var(--text-main); font-size: 1rem;
+            margin-bottom: 25px; text-align: center; font-style: italic; opacity: 0.9;
+        }
+
+        .main-grid { display: grid; grid-template-columns: 300px 1fr 300px; gap: 25px; width: 100%; max-width: 1400px; align-items: start; }
+
+        .card {
+            background: var(--bg-card); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 25px;
+            padding: 25px; box-shadow: var(--shadow-soft); margin-bottom: 20px; transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-3px); }
+
+        .tabs-container { width: 100%; max-width: 900px; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .tabs-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+        .tab-btn {
+            background: rgba(255, 255, 255, 0.5); border: 2px solid white; color: var(--text-main);
+            padding: 10px 25px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 0.95rem;
+            transition: all 0.3s ease; font-family: 'Quicksand', sans-serif; box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+        .tab-btn:hover { background-color: white; color: var(--church-blue); transform: translateY(-2px); }
+        .tab-btn.active { background: white; color: var(--church-blue); border-color: var(--church-blue); box-shadow: 0 4px 12px rgba(212, 165, 165, 0.2); }
+
+        .sidebar-title {
+            font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--church-blue);
+            font-weight: 700; margin-bottom: 15px; border-bottom: 2px dashed var(--bubble-border); padding-bottom: 10px;
+        }
+
+        /* --- PROPHET WIDGET (COQUETTE) --- */
+        .prophet-box {
+            background-color: var(--prophet-bg); border: 4px double var(--prophet-border);
+            border-radius: 15px; padding: 15px; margin-bottom: 25px; position: relative;
+        }
+        .prophet-box::after {
+            content: "🎀"; position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+            font-size: 1.5rem; background-color: var(--bg-card); padding: 0 5px; border-radius: 50%;
+        }
+        .prophet-title { font-family: 'Dancing Script', cursive; font-size: 1.4rem; color: var(--church-blue); text-align: center; margin: 5px 0 10px 0; }
+        .prophet-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.95rem; color: var(--prophet-text); line-height: 1.5; text-align: center; }
+        .prophet-author { display: block; text-align: right; font-size: 0.8rem; font-weight: bold; margin-top: 8px; color: var(--church-gold); font-family: 'Quicksand', sans-serif; }
+
+        .streak-box {
+            background-color: var(--streak-bg); border: 2px solid var(--streak-border); border-radius: 20px;
+            padding: 15px; text-align: center; margin-bottom: 25px; position: relative; overflow: hidden;
+        }
+        .streak-box::before { content: "✨"; position: absolute; top: 5px; right: 10px; font-size: 1.2rem; opacity: 0.4; }
+        .streak-count { font-size: 2.2rem; font-weight: 800; color: var(--streak-icon); display: block; line-height: 1.2; text-shadow: 1px 1px 0px rgba(255,255,255,0.7); }
+        .streak-label { font-size: 0.9rem; color: var(--text-main); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; }
+        .streak-msg { margin-top: 8px; font-size: 0.85rem; font-style: italic; color: var(--text-muted); font-family: 'Playfair Display', serif; }
+
+        textarea.notes-area {
+            width: 100%; height: 400px; border: 2px solid var(--notes-border); border-radius: 15px; padding: 15px;
+            font-family: 'Quicksand', sans-serif; resize: vertical; background-color: var(--notes-bg);
+            color: var(--text-main); box-sizing: border-box; transition: all 0.3s; outline: none;
+        }
+        textarea.notes-area:focus { border-color: var(--church-blue); box-shadow: 0 0 0 3px rgba(212, 165, 165, 0.15); }
+        textarea.notes-area:disabled { background-color: #fcfcfc; cursor: not-allowed; opacity: 0.8; border-style: dashed; }
+
+        .backup-btn {
+            background-color: transparent; color: var(--church-blue); border: 2px solid var(--church-blue);
+            padding: 8px 12px; border-radius: 20px; cursor: pointer; margin-top: 5px; font-weight: bold; width: 100%;
+            transition: all 0.2s; font-size: 0.85rem; font-family: 'Quicksand', sans-serif;
+        }
+        .backup-btn:hover { background-color: var(--church-blue); color: white; transform: translateY(-2px); }
+
+        .danger-btn {
+            background-color: transparent; color: var(--btn-danger-text); border: 1px dashed var(--btn-danger-border);
+            padding: 8px 12px; border-radius: 20px; cursor: pointer; margin-top: 10px; font-weight: bold; width: 100%;
+            transition: all 0.2s; font-size: 0.85rem; font-family: 'Quicksand', sans-serif; opacity: 0.7;
+        }
+        .danger-btn:hover { background-color: var(--btn-danger-border); color: white; opacity: 1; }
+
+        .fav-scripture-box { background-color: var(--fav-bg); border-radius: 15px; padding: 15px; border-left: 5px solid var(--church-gold); }
+        input.fav-ref { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid var(--notes-border); border-radius: 10px; font-weight: bold; box-sizing: border-box; background-color: var(--bg-card); color: var(--text-main); font-family: 'Quicksand', sans-serif; }
+        textarea.fav-text { width: 100%; height: 150px; padding: 10px; border: 1px solid var(--notes-border); border-radius: 10px; font-style: italic; resize: vertical; box-sizing: border-box; background-color: var(--bg-card); color: var(--text-main); font-family: 'Playfair Display', serif; }
+
+        .reminder-box { background-color: var(--reminder-bg); border-radius: 15px; padding: 15px; border: 1px solid var(--reminder-border); }
+        .reminder-btn { background: var(--church-blue); color: white; border: none; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; width: 100%; margin-top: 5px; transition: background 0.2s; font-weight: 600; }
+        .reminder-btn:hover { opacity: 0.9; }
+        .reminder-btn.secondary { background: var(--btn-sec-bg); color: var(--btn-sec-text); border: 2px solid var(--church-blue); margin-top: 10px; }
+        #reminder-time { background-color: var(--bg-card); color: var(--text-main); border: 1px solid var(--notes-border); border-radius: 8px; padding: 5px; }
+
+        /* --- MOOD WIDGET --- */
+        .mood-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .mood-btn {
+            background-color: white; border: 1px solid var(--bubble-border); color: var(--text-main);
+            padding: 8px 15px; border-radius: 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.03); font-family: 'Quicksand', sans-serif;
+        }
+        .mood-btn:hover { background-color: var(--church-blue); color: white; border-color: var(--church-blue); transform: translateY(-2px) rotate(-2deg); }
+        .mood-result-box { margin-top: 15px; background-color: var(--mood-bg); border: 1px dashed var(--mood-border); padding: 15px; border-radius: 15px; animation: fadeIn 0.5s ease; }
+        .mood-text { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: var(--text-main); margin: 0 0 10px 0; }
+        .mood-ref { font-weight: bold; font-size: 0.85rem; color: var(--mood-text); display: block; text-align: right; }
+        
+        .stories-container { margin-top: 15px; padding-top: 10px; border-top: 1px dotted var(--mood-border); }
+        .stories-title { font-size: 0.85rem; font-weight: bold; color: var(--church-blue); display: block; margin-bottom: 5px; font-family: 'Quicksand', sans-serif;}
+        .stories-list { margin: 0; padding-left: 20px; font-size: 0.85rem; color: var(--text-muted); }
+        .stories-list li { margin-bottom: 4px; }
+
+        .book-section { margin-bottom: 30px; }
+        .book-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--church-blue); margin-bottom: 12px; font-weight: 700; display: block; border-bottom: 1px solid var(--bubble-border); width: fit-content; }
+        .chapters-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        
+        .chapter-bubble {
+            width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--bubble-border);
+            background-color: var(--bubble-bg); color: var(--bubble-text); display: flex; align-items: center; justify-content: center;
+            font-size: 0.9rem; cursor: pointer; user-select: none; transition: all 0.3s ease; position: relative; font-weight: 600;
+        }
+        .chapter-bubble:hover { border-color: var(--church-blue); color: var(--church-blue); transform: scale(1.1); z-index: 2; background-color: white; box-shadow: 0 0 8px var(--bubble-border); }
+        .chapter-bubble.read { background-color: var(--church-blue); color: white; border-color: var(--church-blue); }
+        .chapter-bubble.active-selection { box-shadow: 0 0 0 3px var(--church-gold); transform: scale(1.1); z-index: 5; background-color: white; color: var(--church-blue); font-weight: bold; border-color: var(--church-blue); }
+        .chapter-bubble:hover::after { content: "🎀 Leer / Notas"; position: absolute; bottom: 110%; left: 50%; transform: translateX(-50%); background: var(--text-main); color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.75rem; white-space: nowrap; pointer-events: none; opacity: 0; animation: fadeIn 0.3s forwards; margin-bottom: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .progress-container { margin-top: 30px; padding-top: 20px; border-top: 2px dashed var(--notes-border); }
+        .stats-text { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem; color: var(--church-blue);}
+        .progress-bar-bg { background-color: var(--bubble-border); border-radius: 20px; height: 15px; overflow: hidden; width: 100%; }
+        .progress-bar-fill { background: linear-gradient(90deg, var(--church-gold), var(--church-blue)); height: 100%; width: 0%; transition: width 0.8s ease-in-out; border-radius: 20px; }
+
+        @media (max-width: 1000px) { .main-grid { grid-template-columns: 1fr; } .left-panel { order: 2; } .center-panel { order: 1; } .right-panel { order: 3; } }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn" title="Cambiar Tema">🌙</button>
+
+    <h1>🎀 Mi diario de las escrituras 🎀</h1>
+    <div class="instruction-subtitle">
+        "Por medio de cosas pequeñas y sencillas se realizan grandes cosas" ✨
+    </div>
+
+    <div class="tabs-container">
+        <div class="tabs-row">
+            <button class="tab-btn active" onclick="loadVolume('bookOfMormon')">Libro de Mormón</button>
+            <button class="tab-btn" onclick="loadVolume('dc')">Doctrina y Convenios</button>
+            <button class="tab-btn" onclick="loadVolume('pgp')">Perla de Gran Precio</button>
+        </div>
+        <div class="tabs-row">
+            <button class="tab-btn" onclick="loadVolume('oldTestament')">Antiguo Testamento</button>
+            <button class="tab-btn" onclick="loadVolume('newTestament')">Nuevo Testamento</button>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        
+        <aside class="card left-panel">
+            
+            <div class="prophet-box">
+                <h3 class="prophet-title">Mensaje de Esperanza</h3>
+                <p class="prophet-text" id="prophet-text">
+                    </p>
+                <span class="prophet-author" id="prophet-author"></span>
+            </div>
+
+            <div class="streak-box">
+                <span class="streak-count">💖 <span id="streak-number">0</span></span>
+                <span class="streak-label">Días Seguidos</span>
+                <div class="streak-msg" id="streak-msg">¡Comienza hoy hermosa!</div>
+            </div>
+
+            <div class="sidebar-title">⏰ Recordatorios</div>
+            <div class="reminder-box">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0 0 8px 0;">Elige tu hora de estudio:</p>
+                <input type="time" id="reminder-time" style="width: 100%; box-sizing: border-box;">
+                
+                <button onclick="setCalendarReminder()" class="reminder-btn" title="Google Calendar">📅 Agendar en Calendario</button>
+                <button onclick="enableBrowserNotification()" class="reminder-btn secondary" id="browser-notify-btn">🔔 Avisarme aquí</button>
+                <div id="notify-status" style="font-size: 0.75rem; color: var(--church-gold); margin-top: 5px; display: none;">✅ Aviso activado</div>
+            </div>
+
+            <br>
+            <div class="sidebar-title">★ Escritura Favorita</div>
+            <div class="fav-scripture-box">
+                <input type="text" id="fav-ref" class="fav-ref" placeholder="Ej: 1 Nefi 3:7">
+                <textarea id="fav-text" class="fav-text" placeholder="Copia tu versículo favorito aquí..."></textarea>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <div class="sidebar-title">❝ Cita del Día</div>
+                <div id="quote-display" style="font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: var(--text-muted); text-align: center;"></div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <div class="sidebar-title">❤️ ¿Cómo te sientes hoy?</div>
+                <div class="mood-grid">
+                    <button class="mood-btn" onclick="showMood('sad')">😢 Triste</button>
+                    <button class="mood-btn" onclick="showMood('anxious')">😰 Ansiosa</button>
+                    <button class="mood-btn" onclick="showMood('peace')">🕊️ Necesito Paz</button>
+                    <button class="mood-btn" onclick="showMood('lonely')">🧸 Sola</button>
+                    <button class="mood-btn" onclick="showMood('grateful')">✨ Agradecida</button>
+                    <button class="mood-btn" onclick="showMood('doubt')">❓ Con dudas</button>
+                </div>
+                <div id="mood-result" class="mood-result-box" style="display: none;">
+                    <p id="mood-text" class="mood-text"></p>
+                    <span id="mood-ref" class="mood-ref"></span>
+
+                    <div class="stories-container">
+                        <span class="stories-title">📚 Historias sugeridas:</span>
+                        <ul id="stories-list" class="stories-list"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px;">
+                <div class="sidebar-title">💾 Gestión de Datos</div>
+                <div>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top:0;">Tus notas y respaldos.</p>
+                    
+                    <button onclick="downloadAllNotes()" class="backup-btn">📝 Descargar Notas (Leer)</button>
+                    
+                    <div style="border-top: 1px dashed var(--notes-border); margin: 10px 0;"></div>
+
+                    <button onclick="exportData()" class="backup-btn" style="margin-bottom:5px;">📥 Guardar Respaldo</button>
+                    
+                    <input type="file" id="import-file" style="display:none" onchange="importData(this)">
+                    <button onclick="document.getElementById('import-file').click()" class="backup-btn">📤 Restaurar Copia</button>
+
+                    <div style="border-top: 1px dashed var(--notes-border); margin: 10px 0;"></div>
+                    <button onclick="resetAllData()" class="danger-btn">🗑️ Reiniciar Todo</button>
+                </div>
+            </div>
+
+        </aside>
+
+        <main class="card center-panel">
+            <div id="content-area"></div>
+            <div class="progress-container">
+                <div class="stats-text">
+                    <span>✨ Progreso Total</span>
+                    <span id="percent-text" style="color: var(--church-blue);">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
+                </div>
+            </div>
+        </main>
+
+        <aside class="card right-panel">
+            <div class="sidebar-title">✎ Notas: <span id="notes-title" style="color:var(--church-gold); font-weight:normal;">(Elige Cap.)</span></div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0;">Haz clic en un círculo para escribir.</p>
+            
+            <textarea id="study-notes" class="notes-area" placeholder="Selecciona un capítulo a la izquierda para escribir tus pensamientos..." disabled></textarea>
+        </aside>
+
+    </div>
+
+    <script>
+        // --- MAPEO DE URLS ---
+        const urlSlugs = {
+            "1 Nefi": "1-ne", "2 Nefi": "2-ne", "Jacob": "jacob", "Enós": "enos", "Jarom": "jarom", "Omni": "omni",
+            "Palabras de Mormón": "w-of-m", "Mosíah": "mosiah", "Alma": "alma", "Helamán": "hel", "3 Nefi": "3-ne",
+            "4 Nefi": "4-ne", "Mormón": "morm", "Éter": "ether", "Moroni": "moro",
+            "Moisés": "moses", "Abraham": "abr", "José Smith—Mateo": "js-m", "José Smith—Historia": "js-h", "Artículos de Fe": "a-of-f",
+            "Secciones": "dc",
+            "Mateo": "matt", "Marcos": "mark", "Lucas": "luke", "Juan": "john", "Hechos": "acts", "Romanos": "rom",
+            "1 Corintios": "1-cor", "2 Corintios": "2-cor", "Gálatas": "gal", "Efesios": "eph", "Filipenses": "phil",
+            "Colosenses": "col", "1 Tesalonicenses": "1-thes", "2 Tesalonicenses": "2-thes", "1 Timoteo": "1-tim",
+            "2 Timoteo": "2-tim", "Tito": "titus", "Filemón": "philem", "Hebreos": "heb", "Santiago": "james",
+            "1 Pedro": "1-pet", "2 Pedro": "2-pet", "1 Juan": "1-jn", "2 Juan": "2-jn", "3 Juan": "3-jn",
+            "Judas": "jude", "Apocalipsis": "rev",
+            "Génesis": "gen", "Éxodo": "ex", "Levítico": "lev", "Números": "num", "Deuteronomio": "deut",
+            "Josué": "josh", "Jueces": "judg", "Rut": "ruth", "1 Samuel": "1-sam", "2 Samuel": "2-sam",
+            "1 Reyes": "1-kgs", "2 Reyes": "2-kgs", "1 Crónicas": "1-chr", "2 Crónicas": "2-chr", "Esdras": "ezra",
+            "Nehemías": "neh", "Ester": "esth", "Job": "job", "Salmos": "ps", "Proverbios": "prov",
+            "Eclesiastés": "eccl", "Cantares": "song", "Isaías": "isa", "Jeremías": "jer", "Lamentaciones": "lam",
+            "Ezequiel": "ezek", "Daniel": "dan", "Oseas": "hosea", "Joel": "joel", "Amós": "amos",
+            "Abdías": "obad", "Jonás": "jonah", "Miqueas": "micah", "Nahúm": "nahum", "Habacuc": "hab",
+            "Sofonías": "zeph", "Hageo": "hag", "Zacarías": "zech", "Malaquías": "mal"
+        };
+        const volumeUrlMap = { 'bookOfMormon': 'bofm', 'dc': 'dc-testament', 'pgp': 'pgp', 'newTestament': 'nt', 'oldTestament': 'ot' };
+
+        // --- DATA ---
+        const scripturesData = {
+            bookOfMormon: [ { name: "1 Nefi", chapters: 22 }, { name: "2 Nefi", chapters: 33 }, { name: "Jacob", chapters: 7 }, { name: "Enós", chapters: 1 }, { name: "Jarom", chapters: 1 }, { name: "Omni", chapters: 1 }, { name: "Palabras de Mormón", chapters: 1 }, { name: "Mosíah", chapters: 29 }, { name: "Alma", chapters: 63 }, { name: "Helamán", chapters: 16 }, { name: "3 Nefi", chapters: 30 }, { name: "4 Nefi", chapters: 1 }, { name: "Mormón", chapters: 9 }, { name: "Éter", chapters: 15 }, { name: "Moroni", chapters: 10 } ],
+            pgp: [ { name: "Moisés", chapters: 8 }, { name: "Abraham", chapters: 5 }, { name: "José Smith—Mateo", chapters: 1 }, { name: "José Smith—Historia", chapters: 1 }, { name: "Artículos de Fe", chapters: 1 } ],
+            dc: [ { name: "Secciones", chapters: 138 } ],
+            newTestament: [ { name: "Mateo", chapters: 28 }, { name: "Marcos", chapters: 16 }, { name: "Lucas", chapters: 24 }, { name: "Juan", chapters: 21 }, { name: "Hechos", chapters: 28 }, { name: "Romanos", chapters: 16 }, { name: "1 Corintios", chapters: 16 }, { name: "2 Corintios", chapters: 13 }, { name: "Gálatas", chapters: 6 }, { name: "Efesios", chapters: 6 }, { name: "Filipenses", chapters: 4 }, { name: "Colosenses", chapters: 4 }, { name: "1 Tesalonicenses", chapters: 5 }, { name: "2 Tesalonicenses", chapters: 3 }, { name: "1 Timoteo", chapters: 6 }, { name: "2 Timoteo", chapters: 4 }, { name: "Tito", chapters: 3 }, { name: "Filemón", chapters: 1 }, { name: "Hebreos", chapters: 13 }, { name: "Santiago", chapters: 5 }, { name: "1 Pedro", chapters: 5 }, { name: "2 Pedro", chapters: 3 }, { name: "1 Juan", chapters: 5 }, { name: "2 Juan", chapters: 1 }, { name: "3 Juan", chapters: 1 }, { name: "Judas", chapters: 1 }, { name: "Apocalipsis", chapters: 22 } ],
+            oldTestament: [ { name: "Génesis", chapters: 50 }, { name: "Éxodo", chapters: 40 }, { name: "Levítico", chapters: 27 }, { name: "Números", chapters: 36 }, { name: "Deuteronomio", chapters: 34 }, { name: "Josué", chapters: 24 }, { name: "Jueces", chapters: 21 }, { name: "Rut", chapters: 4 }, { name: "1 Samuel", chapters: 31 }, { name: "2 Samuel", chapters: 24 }, { name: "1 Reyes", chapters: 22 }, { name: "2 Reyes", chapters: 25 }, { name: "1 Crónicas", chapters: 29 }, { name: "2 Crónicas", chapters: 36 }, { name: "Esdras", chapters: 10 }, { name: "Nehemías", chapters: 13 }, { name: "Ester", chapters: 10 }, { name: "Job", chapters: 42 }, { name: "Salmos", chapters: 150 }, { name: "Proverbios", chapters: 31 }, { name: "Eclesiastés", chapters: 12 }, { name: "Cantares", chapters: 8 }, { name: "Isaías", chapters: 66 }, { name: "Jeremías", chapters: 52 }, { name: "Lamentaciones", chapters: 5 }, { name: "Ezequiel", chapters: 48 }, { name: "Daniel", chapters: 12 }, { name: "Oseas", chapters: 14 }, { name: "Joel", chapters: 3 }, { name: "Amós", chapters: 9 }, { name: "Abdías", chapters: 1 }, { name: "Jonás", chapters: 4 }, { name: "Miqueas", chapters: 7 }, { name: "Nahúm", chapters: 3 }, { name: "Habacuc", chapters: 3 }, { name: "Sofonías", chapters: 3 }, { name: "Hageo", chapters: 2 }, { name: "Zacarías", chapters: 14 }, { name: "Malaquías", chapters: 4 } ]
+        };
+        const ldsQuotes = [
+            "\"Y sucedió que yo, Nefi, dije a mi padre: Iré y haré lo que el Señor ha mandado...\" (1 Nefi 3:7)",
+            "\"Adán cayó para que los hombres existiesen; y existen los hombres para que tengan gozo.\" (2 Nefi 2:25)",
+            "\"¡Oh, recordad, recordad, hijos míos, las palabras que el rey Benjamín habló a su pueblo...\" (Helamán 5:9)",
+            "\"Y cuando recibáis estas cosas, quisiera exhortaros a que preguntéis a Dios...\" (Moroni 10:4)",
+            "\"Si alguno de vosotros tiene falta de sabiduría, pídala a Dios...\" (Santiago 1:5)",
+            "\"Porque he aquí, esta es mi obra y mi gloria: Llevar a cabo la inmortalidad y la vida eterna del hombre.\" (Moisés 1:39)"
+        ];
+
+        // --- BANCO DE MENSAJES DEL PROFETA (ROTATIVO) ---
+        const prophetMessages = [
+            { text: "\"Ser pacificador es una elección. Ustedes tienen su albedrío para elegir la contención o la reconciliación. Los insto a elegir ser pacificadores, ahora y siempre.\"", author: "- Russell M. Nelson" },
+            { text: "\"Piensen de manera celestial. Cuando tengan que enfrentar un dilema, ¡piensen de manera celestial!\"", author: "- Russell M. Nelson" },
+            { text: "\"El Señor ama el esfuerzo, porque el esfuerzo trae recompensas que no pueden llegar de otra manera.\"", author: "- Russell M. Nelson" },
+            { text: "\"Cualquier cosa que lean en las Escrituras que les advierta sobre el peligro, o cualquier cosa que lean que les prometa felicidad, es verdad.\"", author: "- Dallin H. Oaks" },
+            { text: "\"La fe en Jesucristo es el poder que nos permite sobreponernos a cualquier cosa que la vida nos depare.\"", author: "- Russell M. Nelson" },
+            { text: "\"Nuestras oraciones pueden ser breves, pero deben ser sinceras y frecuentes.\"", author: "- Henry B. Eyring" },
+            { text: "\"El gozo que sentimos tiene poco que ver con las circunstancias de nuestra vida, y todo que ver con el enfoque de nuestra vida.\"", author: "- Russell M. Nelson" }
+        ];
+
+        // --- DATA DE ESTADOS DE ANIMO (8 VERSÍCULOS + HISTORIAS CON REF) ---
+        const moodScriptures = {
+            'sad': { 
+                verses: [
+                    { text: "Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar.", ref: "Mateo 11:28" },
+                    { text: "Y enjugará Dios toda lágrima de los ojos de ellos; y ya no habrá muerte, ni habrá más llanto...", ref: "Apocalipsis 21:4" },
+                    { text: "El Señor está cerca de los quebrantados de corazón, y salva a los contritos de espíritu.", ref: "Salmos 34:18" },
+                    { text: "Ciertamente llevó él nuestras enfermedades, y sufrió nuestros dolores...", ref: "Isaías 53:4" },
+                    { text: "Hijo mío, paz a tu alma; tu adversidad y tus aflicciones no serán más que por un breve momento.", ref: "D. y C. 121:7" },
+                    { text: "Sé que eres redimido, a causa de la rectitud de tu Redentor.", ref: "2 Nefi 2:3" },
+                    { text: "No os dejaré huérfanos; vendré a vosotros.", ref: "Juan 14:18" },
+                    { text: "Y él saldrá, sufriendo dolores, aflicciones y tentaciones de todas clases... para que sus entrañas sean llenas de misericordia.", ref: "Alma 7:11-12" }
+                ],
+                stories: [
+                    "El sufrimiento de Job y su paciencia (Job 1-2, 42)",
+                    "Ruth y Noemí encontrando esperanza (Rut 1-4)",
+                    "El Salmo de Nefi: consuelo en la debilidad (2 Nefi 4:16-35)"
+                ]
+            },
+            'anxious': { 
+                verses: [
+                    { text: "No temáis, pequeñita manada; haced el bien; dejad que la tierra y el infierno se unan contra vosotros...", ref: "D. y C. 6:34" },
+                    { text: "Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios...", ref: "Filipenses 4:6-7" },
+                    { text: "No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios.", ref: "Isaías 41:10" },
+                    { text: "Echando toda vuestra ansiedad sobre él, porque él tiene cuidado de vosotros.", ref: "1 Pedro 5:7" },
+                    { text: "Mira que te mando que te esfuerces y seas valiente; no temas ni desmayes.", ref: "Josué 1:9" },
+                    { text: "Consultad al Señor en todos vuestros hechos, y él os dirigirá para bien.", ref: "Alma 37:37" },
+                    { text: "La paz os dejo, mi paz os doy... No se turbe vuestro corazón, ni tenga miedo.", ref: "Juan 14:27" },
+                    { text: "Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia.", ref: "Proverbios 3:5" }
+                ],
+                stories: [
+                    "Jesús calma la tempestad (Marcos 4:35-41)",
+                    "La valentía de la Reina Ester (Ester 4-5)",
+                    "Los jóvenes guerreros de Helamán (Alma 53, 56-58)"
+                ]
+            },
+            'peace': { 
+                verses: [
+                    { text: "Aprende de mí y escucha mis palabras; camina en la mansedumbre de mi Espíritu, y en mí tendrás paz.", ref: "D. y C. 19:23" },
+                    { text: "Tú guardarás en completa paz a aquel cuyo pensamiento en ti persevera.", ref: "Isaías 26:3" },
+                    { text: "Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones.", ref: "Filipenses 4:7" },
+                    { text: "Jehová bendecirá a su pueblo con paz.", ref: "Salmos 29:11" },
+                    { text: "Quisiera que consideraseis el bendito y feliz estado de aquellos que guardan los mandamientos.", ref: "Mosíah 2:41" },
+                    { text: "En el mundo tendréis aflicción; pero confiad, yo he vencido al mundo.", ref: "Juan 16:33" },
+                    { text: "Mas el que hiciere las obras de la rectitud recibirá su galardón, sí, la paz en este mundo...", ref: "D. y C. 59:23" },
+                    { text: "Venid a mí... y hallaréis descanso para vuestras almas.", ref: "Mateo 11:29" }
+                ],
+                stories: [
+                    "La visita del Salvador a las Américas (3 Nefi 11)",
+                    "El pueblo de Ammón enterrando sus armas (Alma 24)",
+                    "La oración de Enós por paz espiritual (Enós 1)"
+                ]
+            },
+            'lonely': { 
+                verses: [
+                    { text: "Iré delante de vuestra faz. Estaré a vuestra diestra y a vuestra siniestra...", ref: "D. y C. 84:88" },
+                    { text: "¿Se olvidará la mujer de lo que dio a luz...? Aunque olviden ellas, yo no me olvidaré de ti.", ref: "Isaías 49:15" },
+                    { text: "No te desampararé, ni te dejaré.", ref: "Josué 1:5" },
+                    { text: "He aquí, yo estoy con vosotros todos los días, hasta el fin del mundo.", ref: "Mateo 28:20" },
+                    { text: "Aunque mi padre y mi madre me dejaran, con todo, Jehová me recogerá.", ref: "Salmos 27:10" },
+                    { text: "Por lo cual estoy persuadido de que ni la muerte, ni la vida... nos podrá separar del amor de Dios.", ref: "Romanos 8:38-39" },
+                    { text: "Sé fuerte y valiente; no temas... porque Jehová tu Dios estará contigo.", ref: "Deuteronomio 31:6" },
+                    { text: "He aquí, te tengo grabada en las palmas de mis manos.", ref: "1 Nefi 21:16" }
+                ],
+                stories: [
+                    "José Smith en la cárcel de Liberty (D. y C. 121-122)",
+                    "El profeta Elías en el monte Horeb (1 Reyes 19)",
+                    "Moroni vagando solo por su seguridad (Moroni 1)"
+                ]
+            },
+            'grateful': { 
+                verses: [
+                    { text: "Y en nada ofende el hombre a Dios... sino aquellos que no confiesan su mano en todas las cosas.", ref: "D. y C. 59:21" },
+                    { text: "Dad gracias en todo, porque esta es la voluntad de Dios.", ref: "1 Tesalonicenses 5:18" },
+                    { text: "Este es el día que hizo Jehová; nos gozaremos y alegraremos en él.", ref: "Salmos 118:24" },
+                    { text: "Vivid dando gracias diariamente por las muchas misericordias y bendiciones que él os confiere.", ref: "Alma 34:38" },
+                    { text: "Y el que reciba todas las cosas con gratitud será glorificado.", ref: "D. y C. 78:19" },
+                    { text: "Entrad por sus puertas con acción de gracias, por sus atrios con alabanza.", ref: "Salmos 100:4" },
+                    { text: "Y reine la paz de Dios en vuestros corazones... y sed agradecidos.", ref: "Colosenses 3:15" },
+                    { text: "Bendeciré a Jehová en todo tiempo; su alabanza estará de continuo en mi boca.", ref: "Salmos 34:1" }
+                ],
+                stories: [
+                    "Uno de los diez lepros regresa a dar gracias (Lucas 17:11-19)",
+                    "Amón gloriándose en el Señor (Alma 26)",
+                    "El hermano de Jared agradeciendo el viaje (Éter 6)"
+                ]
+            },
+            'doubt': { 
+                verses: [
+                    { text: "Y cuando recibáis estas cosas, quisiera exhortaros a que preguntéis a Dios...", ref: "Moroni 10:4" },
+                    { text: "Si alguno de vosotros tiene falta de sabiduría, pídala a Dios.", ref: "Santiago 1:5" },
+                    { text: "Creo; ayuda mi incredulidad.", ref: "Marcos 9:24" },
+                    { text: "No pidas milagros para que tengas fe; sino que has de tener fe para que se te concedan milagros.", ref: "D. y C. 24:13" },
+                    { text: "Y ahora bien... la fe no es tener un conocimiento perfecto de las cosas.", ref: "Alma 32:21" },
+                    { text: "No disputéis porque no veis, porque no recibís ningún testimonio sino hasta después de la prueba de vuestra fe.", ref: "Éter 12:6" },
+                    { text: "¿No hablé paz a tu mente en cuanto al asunto? ¿Qué mayor testimonio puedes tener que de Dios?", ref: "D. y C. 6:23" },
+                    { text: "Bienaventurados los que no vieron y creyeron.", ref: "Juan 20:29" }
+                ],
+                stories: [
+                    "La visión de Lehi y el árbol de la vida (1 Nefi 8)",
+                    "Pedro caminando sobre el agua (Mateo 14:22-33)",
+                    "El padre del niño poseído: 'Ayuda mi incredulidad' (Marcos 9:14-29)"
+                ]
+            }
+        };
+
+        // --- VARIABLES GLOBALES ---
+        let currentVolume = 'bookOfMormon';
+        let userProgress = {}; 
+        let chapterNotes = {}; 
+        let currentSelectedChapterId = null; 
+
+        // --- CARGAR DATOS ---
+        try {
+            const savedProgress = localStorage.getItem('ldsTrackerProgress');
+            if (savedProgress) userProgress = JSON.parse(savedProgress);
+            
+            const savedNotes = localStorage.getItem('ldsChapterNotes');
+            if (savedNotes) chapterNotes = JSON.parse(savedNotes);
+
+            const oldGlobalNotes = localStorage.getItem('ldsNotes');
+            if (oldGlobalNotes && !savedNotes) {
+                chapterNotes['general'] = oldGlobalNotes;
+                localStorage.setItem('ldsChapterNotes', JSON.stringify(chapterNotes));
+            }
+
+        } catch (e) { console.error("Error cargando datos", e); }
+
+        // MODO OSCURO (LOGICA)
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const btn = document.getElementById('theme-btn');
+            const isDark = document.body.classList.contains('dark-mode');
+            btn.innerText = isDark ? "☀" : "🌙";
+            localStorage.setItem('ldsTheme', isDark ? 'dark' : 'light');
+        }
+
+        if (localStorage.getItem('ldsTheme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('theme-btn').innerText = "☀";
+        }
+
+        // --- SISTEMA DE RACHAS ---
+        function checkStreak() {
+            const today = new Date().toISOString().split('T')[0];
+            let lastVisit = localStorage.getItem('ldsLastVisitDate');
+            let streak = parseInt(localStorage.getItem('ldsStreak') || 0);
+
+            if (lastVisit !== today) {
+                const yesterdayDate = new Date();
+                yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+                const yesterday = yesterdayDate.toISOString().split('T')[0];
+
+                if (lastVisit === yesterday) {
+                    streak++; 
+                } else {
+                    streak = 1; 
+                }
+                localStorage.setItem('ldsLastVisitDate', today);
+                localStorage.setItem('ldsStreak', streak);
+            }
+            updateStreakUI(streak);
+        }
+
+        function updateStreakUI(streak) {
+            document.getElementById('streak-number').innerText = streak;
+            const msgEl = document.getElementById('streak-msg');
+            let msg = "";
+            if (streak <= 1) msg = "¡Hoy comienza un gran cambio!";
+            else if (streak <= 3) msg = "¡Bien! Estás creando un hábito santo.";
+            else if (streak <= 7) msg = "¡Una semana! Tu espíritu se fortalece.";
+            else msg = "¡Tu dedicación es inspiradora!";
+            msgEl.innerText = msg;
+        }
+
+        checkStreak();
+
+        // DOM Elements
+        const notesArea = document.getElementById('study-notes');
+        const notesTitle = document.getElementById('notes-title');
+        const favRefInput = document.getElementById('fav-ref');
+        const favTextInput = document.getElementById('fav-text');
+        
+        // Load Fav Data
+        if(favRefInput) favRefInput.value = localStorage.getItem('ldsFavRef') || '';
+        if(favTextInput) favTextInput.value = localStorage.getItem('ldsFavText') || '';
+        const savedTime = localStorage.getItem('ldsReminderTime');
+        if(savedTime) document.getElementById('reminder-time').value = savedTime;
+
+        // Listeners for Favs
+        if(favRefInput) favRefInput.addEventListener('input', () => localStorage.setItem('ldsFavRef', favRefInput.value));
+        if(favTextInput) favTextInput.addEventListener('input', () => localStorage.setItem('ldsFavText', favTextInput.value));
+        
+        // --- LOGICA DE NOTAS DINÁMICAS ---
+        if(notesArea) {
+            notesArea.addEventListener('input', () => {
+                if (currentSelectedChapterId) {
+                    chapterNotes[currentSelectedChapterId] = notesArea.value;
+                    localStorage.setItem('ldsChapterNotes', JSON.stringify(chapterNotes));
+                }
+            });
+        }
+
+        document.getElementById('quote-display').innerText = ldsQuotes[Math.floor(Math.random() * ldsQuotes.length)];
+
+        // --- CARGAR MENSAJE DEL PROFETA (ROTATIVO) ---
+        // Se asegura de que el mensaje de "Ser pacificador" sea el primero o parte de la rotación
+        const todayIndex = new Date().getDate() % prophetMessages.length; 
+        const dailyMessage = prophetMessages[todayIndex];
+        
+        document.querySelector('.prophet-text').innerText = dailyMessage.text;
+        document.querySelector('.prophet-author').innerText = dailyMessage.author;
+
+
+        // --- LOGICA ESTADO DE ANIMO (ALEATORIO + HISTORIAS) ---
+        function showMood(mood) {
+            const data = moodScriptures[mood];
+            if (data) {
+                // 1. Elegir versículo aleatorio
+                const verses = data.verses;
+                const randomVerse = verses[Math.floor(Math.random() * verses.length)];
+
+                // 2. Mostrar versículo
+                const resultBox = document.getElementById('mood-result');
+                const textEl = document.getElementById('mood-text');
+                const refEl = document.getElementById('mood-ref');
+                const storiesList = document.getElementById('stories-list');
+                
+                resultBox.style.display = 'block';
+                textEl.innerText = `"${randomVerse.text}"`;
+                refEl.innerText = randomVerse.ref;
+
+                // 3. Mostrar historias
+                storiesList.innerHTML = ''; // Limpiar lista anterior
+                data.stories.forEach(story => {
+                    const li = document.createElement('li');
+                    li.innerText = story;
+                    storiesList.appendChild(li);
+                });
+            }
+        }
+
+        // --- FUNCIONES RECORDATORIOS ---
+        function setCalendarReminder() {
+            const timeVal = document.getElementById('reminder-time').value;
+            if(!timeVal) return alert("Por favor selecciona una hora primero.");
+            localStorage.setItem('ldsReminderTime', timeVal);
+            const title = encodeURIComponent("📖 Leer Escrituras");
+            const details = encodeURIComponent("Tiempo de estudio personal en mi Centro de Escrituras.");
+            const url = `https://calendar.google.com/calendar/u/0/r/eventedit?text=${title}&details=${details}&recur=RRULE:FREQ=DAILY`;
+            window.open(url, '_blank');
+        }
+
+        function enableBrowserNotification() {
+            const timeVal = document.getElementById('reminder-time').value;
+            if(!timeVal) return alert("Por favor selecciona una hora primero.");
+            localStorage.setItem('ldsReminderTime', timeVal);
+            if (!("Notification" in window)) {
+                alert("Tu navegador no soporta notificaciones.");
+            } else {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        document.getElementById('notify-status').style.display = 'block';
+                        document.getElementById('notify-status').innerText = `✅ Aviso activado a las ${timeVal}`;
+                        startClockCheck();
+                        new Notification("Recordatorios Activados", { body: "Te avisaremos aquí si tienes la página abierta." });
+                    } else { alert("Necesitas dar permiso."); }
+                });
+            }
+        }
+
+        let lastNotifiedMinute = "";
+        function startClockCheck() {
+            setInterval(() => {
+                const targetTime = localStorage.getItem('ldsReminderTime');
+                if(!targetTime) return;
+                const now = new Date();
+                const currentHours = String(now.getHours()).padStart(2, '0');
+                const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+                const currentTimeStr = `${currentHours}:${currentMinutes}`;
+                if (currentTimeStr === targetTime && lastNotifiedMinute !== currentTimeStr) {
+                    lastNotifiedMinute = currentTimeStr;
+                    new Notification("📖 ¡Hora de Escrituras!", { body: "Es momento de tu estudio diario." });
+                }
+            }, 30000);
+        }
+        
+        if (Notification.permission === "granted" && localStorage.getItem('ldsReminderTime')) {
+            startClockCheck();
+            document.getElementById('notify-status').style.display = 'block';
+        }
+
+        // --- DESCARGAR TODAS LAS NOTAS ---
+        function downloadAllNotes() {
+            let content = "MI DIARIO DE ESTUDIO DE ESCRITURAS\n";
+            content += "Generado el: " + new Date().toLocaleDateString() + "\n";
+            content += "====================================\n\n";
+
+            if (Object.keys(chapterNotes).length === 0) {
+                alert("Aún no tienes notas guardadas para descargar.");
+                return;
+            }
+
+            const sortedKeys = Object.keys(chapterNotes).sort();
+
+            sortedKeys.forEach(key => {
+                const note = chapterNotes[key];
+                if (note && note.trim() !== "") {
+                    const parts = key.split('-');
+                    let readableTitle = key;
+                    if(parts.length >= 3) {
+                        readableTitle = `${parts[1]} ${parts[2]}`; 
+                    }
+                    
+                    content += `--- NOTAS: ${readableTitle.toUpperCase()} ---\n`;
+                    content += `${note}\n\n`;
+                }
+            });
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Diario_Escrituras_Completo_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // --- FUNCIÓN: EXPORTAR DATOS (BACKUP REAL - JSON) ---
+        function exportData() {
+            const data = {
+                progress: localStorage.getItem('ldsTrackerProgress'),
+                chapterNotes: localStorage.getItem('ldsChapterNotes'),
+                notes: localStorage.getItem('ldsNotes'),
+                favRef: localStorage.getItem('ldsFavRef'),
+                favText: localStorage.getItem('ldsFavText'),
+                streak: localStorage.getItem('ldsStreak'),
+                lastVisit: localStorage.getItem('ldsLastVisitDate'),
+                reminder: localStorage.getItem('ldsReminderTime')
+            };
+            
+            const jsonStr = JSON.stringify(data);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const date = new Date().toISOString().split('T')[0];
+            a.download = `Respaldo_Escrituras_${date}.json`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // --- FUNCIÓN: IMPORTAR DATOS (RESTAURAR) ---
+        function importData(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (confirm("⚠️ ¿Estás seguro de que quieres cargar este respaldo? Esto reemplazará los datos actuales.")) {
+                        if(data.progress) localStorage.setItem('ldsTrackerProgress', data.progress);
+                        if(data.chapterNotes) localStorage.setItem('ldsChapterNotes', data.chapterNotes);
+                        if(data.notes) localStorage.setItem('ldsNotes', data.notes);
+                        if(data.favRef) localStorage.setItem('ldsFavRef', data.favRef);
+                        if(data.favText) localStorage.setItem('ldsFavText', data.favText);
+                        if(data.streak) localStorage.setItem('ldsStreak', data.streak);
+                        if(data.lastVisit) localStorage.setItem('ldsLastVisitDate', data.lastVisit);
+                        if(data.reminder) localStorage.setItem('ldsReminderTime', data.reminder);
+                        
+                        alert("¡Datos restaurados con éxito! La página se recargará.");
+                        location.reload();
+                    }
+                } catch (err) {
+                    alert("Error al leer el archivo. Asegúrate de que sea un archivo .json válido.");
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+            input.value = ''; 
+        }
+
+        // --- BORRAR TODO (RESET) ---
+        function resetAllData() {
+            if (confirm("⚠️ ¿Estás seguro de que quieres BORRAR TODO?\n\nEsta acción eliminará todas tus notas, rachas y capítulos leídos. No se puede deshacer.")) {
+                localStorage.removeItem('ldsTrackerProgress');
+                localStorage.removeItem('ldsChapterNotes');
+                localStorage.removeItem('ldsNotes'); 
+                localStorage.removeItem('ldsFavRef');
+                localStorage.removeItem('ldsFavText');
+                localStorage.removeItem('ldsStreak');
+                localStorage.removeItem('ldsLastVisitDate');
+                localStorage.removeItem('ldsReminderTime');
+                
+                alert("Tu diario se ha reiniciado correctamente.");
+                location.reload();
+            }
+        }
+
+        // --- ABRIR CAPÍTULO (Click Derecho) ---
+        function openChapter(bookName, chapter) {
+            const bookSlug = urlSlugs[bookName];
+            let volSlug = volumeUrlMap[currentVolume];
+            if (!bookSlug || !volSlug) return alert("Enlace no disponible.");
+            let url = `https://www.churchofjesuschrist.org/study/scriptures/${volSlug}/${bookSlug}/${chapter}?lang=spa`;
+            if (currentVolume === 'dc') {
+                url = `https://www.churchofjesuschrist.org/study/scriptures/dc-testament/dc/${chapter}?lang=spa`;
+            }
+            window.open(url, '_blank');
+        }
+
+        // --- GESTIÓN DE CAPÍTULOS y NOTAS ---
+        function loadVolume(volumeKey) {
+            currentVolume = volumeKey;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.getAttribute('onclick').includes(volumeKey)) btn.classList.add('active');
+            });
+
+            const contentArea = document.getElementById('content-area');
+            if(!contentArea) return;
+            contentArea.innerHTML = '';
+            const books = scripturesData[volumeKey];
+            if(!books) return;
+            
+            books.forEach(book => {
+                const bookDiv = document.createElement('div');
+                bookDiv.className = 'book-section';
+                const title = document.createElement('div');
+                title.className = 'book-title';
+                title.innerText = book.name;
+                bookDiv.appendChild(title);
+                const grid = document.createElement('div');
+                grid.className = 'chapters-grid';
+                for (let i = 1; i <= book.chapters; i++) {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'chapter-bubble';
+                    bubble.innerText = i;
+                    const chapterId = `${volumeKey}-${book.name}-${i}`;
+                    
+                    if (userProgress[chapterId]) bubble.classList.add('read');
+                    if (currentSelectedChapterId === chapterId) bubble.classList.add('active-selection');
+
+                    bubble.onclick = () => selectAndToggleChapter(chapterId, book.name, i, bubble);
+                    bubble.oncontextmenu = (e) => { e.preventDefault(); openChapter(book.name, i); };
+                    
+                    grid.appendChild(bubble);
+                }
+                bookDiv.appendChild(grid);
+                contentArea.appendChild(bookDiv);
+            });
+            updateProgressBar();
+        }
+
+        function selectAndToggleChapter(id, bookName, chapterNum, element) {
+            element.classList.toggle('read');
+            if (element.classList.contains('read')) { 
+                userProgress[id] = true; 
+            } else { 
+                delete userProgress[id]; 
+            }
+            localStorage.setItem('ldsTrackerProgress', JSON.stringify(userProgress));
+            updateProgressBar();
+
+            document.querySelectorAll('.chapter-bubble').forEach(b => b.classList.remove('active-selection'));
+            element.classList.add('active-selection');
+            currentSelectedChapterId = id;
+            
+            const notesArea = document.getElementById('study-notes');
+            const notesTitle = document.getElementById('notes-title');
+            
+            notesArea.disabled = false;
+            notesArea.placeholder = `Escribe aquí tus impresiones sobre ${bookName} ${chapterNum}...`;
+            notesTitle.innerText = `${bookName} ${chapterNum}`;
+            notesArea.value = chapterNotes[id] || "";
+            
+            if(window.innerWidth < 1000) {
+                notesArea.scrollIntoView({behavior: "smooth"});
+            }
+        }
+
+        function updateProgressBar() {
+            const books = scripturesData[currentVolume];
+            if(!books) return;
+            let totalChapters = 0;
+            let readChapters = 0;
+            books.forEach(book => {
+                for (let i = 1; i <= book.chapters; i++) {
+                    totalChapters++;
+                    const chapterId = `${currentVolume}-${book.name}-${i}`;
+                    if (userProgress[chapterId]) readChapters++;
+                }
+            });
+            const percent = totalChapters === 0 ? 0 : Math.round((readChapters / totalChapters) * 100);
+            const fillEl = document.getElementById('progress-fill');
+            const textEl = document.getElementById('percent-text');
+            if(fillEl) fillEl.style.width = percent + '%';
+            if(textEl) textEl.innerText = `${percent}%`;
+        }
+
+        loadVolume('bookOfMormon');
+    </script>
+</body>
+</html>
