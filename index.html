@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Diario de estudio 🎀</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#d4a5a5">
+    <link rel="apple-touch-icon" href="icon.png">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
@@ -68,7 +73,7 @@
             --church-gold: #f0c0c0;
             --bg-main: #3a2a2a;
             --bg-card: rgba(69, 50, 50, 0.95);        
-            --text-main: #f2e6e6;      
+            --text-main: #f2e6e6;       
             --text-muted: #cbbaba;
 
             --bubble-bg: #543d3d;
@@ -1351,7 +1356,7 @@
                 localStorage.removeItem('ldsStreak');
                 localStorage.removeItem('ldsLastVisitDate');
                 localStorage.removeItem('ldsReminderTime');
-                localStorage.removeItem('ldsDiaryDraft'); // También borra el borrador del diario
+                localStorage.removeItem('ldsDiaryDraft');
                 
                 alert("Tu diario se ha reiniciado correctamente. ¡A empezar de nuevo! ✨");
                 location.reload();
@@ -1539,9 +1544,21 @@
 
             doc.save(`Diario_Personal_${date}.pdf`);
         }
+        
+        // --- SERVICE WORKER REGISTRATION (PARA LA APP) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado con éxito:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Fallo al registrar Service Worker:', error);
+                    });
+            });
+        }
 
         loadVolume('bookOfMormon');
     </script>
 </body>
 </html>
-
